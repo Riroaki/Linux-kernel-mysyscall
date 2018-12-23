@@ -132,15 +132,13 @@ EXPORT_SYMBOL(fs_overflowgid);
 extern unsigned long pfcount;
 asmlinkage int sys_mysyscall(void)
 {
-	printk("mysyscall:\npage fault for system: %lu\n", pfcount);
-	printk("page fault for current process: %lu\n", current->pf);
-	printk("dirty pages for all processes:\n");
-	struct task_struct *p=NULL;
-	for(p=&init_task;(p=next_task(p))!=&init_task;) {
-		printk("pid:%d\tdirty page:%d\n", p->pid, p->nr_dirtied);
-	}
-	printk("end of mysyscall.\n");
-	return 0;
+        printk("mysyscall:\n%lu\t%lu\n", current->pf, pfcount);
+        struct task_struct *p=NULL;
+        for(p=&init_task;(p=next_task(p))!=&init_task;) {
+                printk("%d\t%s\t%d\n", p->pid, p->comm, p->nr_dirtied);
+        }
+        printk("end of mysyscall.\n");
+        return 0;
 }
 /*
  * Returns true if current's euid is same as p's uid or euid,
